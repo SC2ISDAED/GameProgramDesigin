@@ -6,9 +6,14 @@ int main()
 	int height = 20;
 	std::string nameofWindow("Console_Ã∞≥‘…ﬂ");
 	MainWindows mainwnd(width,height,nameofWindow);
-	while (!mainwnd.gameData.BisGameOver)
+	while (!mainwnd.BWindosOver())
 	{
-		mainwnd.TickFrame();
+		mainwnd.Initial();
+		while (!mainwnd.BGameOver()&& !mainwnd.BWindosOver())
+		{
+			mainwnd.TickFrame();
+		}
+		Sleep(1000);
 	}
 	return 0;
 }

@@ -30,13 +30,17 @@ void MainWindows::Draw()
 			{
 				line += "*";
 			}
+			else if (m_fruits.BIsSameLoc(j,i))
+			{
+				line += "&";
+			}
 			else if (j== WindowsWidth -1||j==0)
 			{
 				line += "#";
 			}
 			else if (i== WindowsHeigth -1||i==0)
 			{
-				line += "-";
+				line += "#";
 			}
 			else
 			{
@@ -71,22 +75,26 @@ void MainWindows::ProcessInput()
 		{
 		case 'a':
 		case 'A':
-			dir = SnakeDirection::LEFT;
+			if (dir!=SnakeDirection::RIGHT)
+					dir = SnakeDirection::LEFT;
 			break;
 		case 'w':
 		case 'W':
-			dir = SnakeDirection::UP;
+			if (dir != SnakeDirection::DOWN)
+				dir = SnakeDirection::UP;
 			break;
 		case 'd':
 		case 'D':
-			dir = SnakeDirection::RIGHT;
+			if (dir != SnakeDirection::LEFT)
+				dir = SnakeDirection::RIGHT;
 			break;
 		case 's':
 		case 'S':
-			dir = SnakeDirection::DOWN;
+			if (dir != SnakeDirection::UP)
+				dir = SnakeDirection::DOWN;
 			break;
-		default:
-			dir = SnakeDirection::STOP;
+		case '\033':
+			BWindowsShouldOver = true;
 			break;
 		}
 	}
@@ -128,6 +136,7 @@ void MainWindows::GameLogic()
 	short newX, newY;
 	m_Snake.GetHeadLoc(newX, newY);
 	SnakeDirection snakeDir = m_Snake.GetDirection();
+
 	switch (snakeDir)
 	{
 	case SnakeDirection::STOP:
@@ -147,11 +156,62 @@ void MainWindows::GameLogic()
 	default:
 		break;
 	}
-	if (snakeDir!=SnakeDirection::STOP)
+	
+
+	if (newX>= WindowsWidth-1||newX<1||newY<1|| newY >= WindowsHeigth-1)
 	{
-		m_Snake.push_forward(newX, newY);
+		//撞到墙上死亡判断
+		gameData.BisGameOver = true;
+	}
+	if (m_Snake.BIsSameTrialLoc(newX,newY))
+	{
+		//咬到蛇尾上面了 
+		gameData.BisGameOver = true;
+	}
+	if (m_fruits.BIsSameLoc(newX,newY))
+	{
+	//这里比较难理解的地方是
+	//如果蛇吃掉水果后，我们要增加蛇尾的长度，所以这里就不删除旧的最后一个蛇尾
+		gameData.Score++;
+		m_Snake.AddLength(1);
+		initalFruits();
+	}
+	else
+	{
+		//相反，没有吃掉水果，那么我们应该删掉最后一个旧位置上的蛇尾
 		m_Snake.pop_back();
 	}
+	if (snakeDir != SnakeDirection::STOP)
+	{
+		//更新蛇头位置
+		m_Snake.push_forward(newX, newY);
+		
+	}
+}
+
+void MainWindows::initalFruits()
+{
+	short newfruitsX =-1;
+	short newfruitsY =-1;
+	bool isNotSuccessed = true;
+	while (isNotSuccessed)
+	{
+		newfruitsX = rand() % WindowsWidth;
+		newfruitsY = rand() % WindowsHeigth;
+		if (newfruitsX >= WindowsWidth-1 || newfruitsX <= 1||newfruitsY >= WindowsHeigth||newfruitsY<=1)
+		{
+			//生成正在墙壁上了，重新生成
+			continue;
+		}
+		if (m_Snake.BIsSameHeadLoc(newfruitsX,newfruitsY)||m_Snake.BIsSameTrialLoc(newfruitsX,newfruitsY))
+		{
+			//生成在蛇身上了,重新生成
+			continue;
+		}
+		m_fruits.Setloc(newfruitsX, newfruitsY);
+		isNotSuccessed = false;
+	}
+
 
 }
 
@@ -193,7 +253,11 @@ MainWindows::MainWindows(short _Width, short _Height, const std::string& nameOfW
 
 void MainWindows::Initial()
 {
-
+	gameData.Score = 0;
+	gameData.BisGameOver = false;
+	m_Snake.init();
+	initalFruits();
+	
 }
 
 void MainWindows::TickFrame()

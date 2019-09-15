@@ -22,11 +22,14 @@ private:
 	SnakeDirection m_direction;
 	short m_Size;
 	short m_Length;
-
+	short initLocX;
+	short initLocY;
+	
 public:
 	Snake(short headLocX, short headLocY);
+	void init();
 	void Update(short _x,short _y);
-
+	void AddLength(short addLength);
 	bool BIsSameHeadLoc(short _x, short _y);
 	bool BIsSameTrialLoc(short _x, short _y);
 

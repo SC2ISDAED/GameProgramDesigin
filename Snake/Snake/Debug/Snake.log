@@ -1,5 +1,2 @@
-﻿  MainWindow.cpp
-e:\游戏程序设计\snake\snake\mainwindow.cpp(20): warning C4018: “<”: 有符号/无符号不匹配
-e:\游戏程序设计\snake\snake\mainwindow.cpp(23): warning C4018: “<”: 有符号/无符号不匹配
-e:\游戏程序设计\snake\snake\mainwindow.cpp(50): warning C4018: “<”: 有符号/无符号不匹配
+﻿  main.cpp
   Snake.vcxproj -> E:\游戏程序设计\Snake\Debug\Snake.exe

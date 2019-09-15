@@ -21,20 +21,40 @@ void Snake::push_forward(short newHeadLocX, short newHeadLocY)
 }
 Snake::Snake(short headLocX, short headLocY)
 {
+	initLocX = headLocX;
+	initLocY = headLocY;
+}
+
+void Snake::init()
+{
 	m_Length = 6;
 	m_Size = 10;
-	head = std::make_shared<SnakeNode>(headLocX,headLocY);
+	head = std::make_shared<SnakeNode>(initLocX, initLocY);
 	std::shared_ptr<SnakeNode> currentNode = head;
-	for (int i=0;i< m_Length -1;i++)
+	for (int i = 0; i < m_Length - 1; i++)
 	{
-		currentNode->nextSnakeNode = std::make_shared<SnakeNode>(headLocX - i - 1, headLocY);
+		currentNode->nextSnakeNode = std::make_shared<SnakeNode>(initLocX - i - 1, initLocY);
 		currentNode = currentNode->nextSnakeNode;
 	}
+	m_direction = SnakeDirection::RIGHT;
 }
 
 void Snake::Update(short _x, short _y)
 {
 
+}
+
+void Snake::AddLength(short addLength)
+{
+	short newLength = m_Length + addLength;
+	if (newLength >m_Size)
+	{
+		m_Length = m_Size;
+	}
+	else
+	{
+		m_Length = newLength;
+	}
 }
 
 bool Snake::BIsSameHeadLoc(short _x, short _y)
