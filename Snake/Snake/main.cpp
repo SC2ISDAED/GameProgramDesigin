@@ -13,7 +13,7 @@ int main()
 		{
 			mainwnd.TickFrame();
 		}
-		Sleep(1000);
+		Sleep(100);
 	}
 	return 0;
 }
