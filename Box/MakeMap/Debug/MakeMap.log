@@ -1,0 +1,3 @@
+﻿  WindowsProcess.cpp
+e:\游戏程序设计\box\makemap\windowsprocess.cpp(56): warning C4018: “<”: 有符号/无符号不匹配
+  MakeMap.vcxproj -> E:\游戏程序设计\Box\Debug\MakeMap.exe
