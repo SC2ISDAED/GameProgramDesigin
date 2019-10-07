@@ -10,3 +10,8 @@ bool Floor::SetLocation(std::pair<short, short> _location)
 	return true;
 }
 
+bool Floor::IsSameLocation(std::pair<short, short> _location)
+{
+	return location == _location;
+}
+

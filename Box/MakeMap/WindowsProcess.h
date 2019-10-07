@@ -12,6 +12,7 @@ class MainWindows
 private:
 	void Draw();
 	void ProcessInput();
+	void UpdateMap();
 	void SetPos(short X, short Y);
 	void Prompt_info(short _x, short _y);
 	void DrawInfomation(short _x, short _y, int color, const std::string & information);
@@ -26,14 +27,16 @@ private:
 
 	std::vector<Floor> m_Map;
 	const char * map[6] = {"¡ö","¡õ","¡ô","¡î","¡ñ","¡ï"};
-	short mapNum;
-	short mapCurrentNum;
+	short mapNum=4;
+	short mapCurrentNum=3;
 	short mapWidhth = 0;
 	short mapHeight = 0;
 	Actor Player;
-
+	int targetNum = 0;
 	bool BWindowsShouldOver;
 	GameModeData gameInstancedData;
+	bool IsCharcterAtTarget = false;
+	short latterFrame = false;
 public:
 
 	MainWindows(short _Width, short _Height, const std::string & nameOfWindows);

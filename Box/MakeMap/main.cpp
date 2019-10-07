@@ -5,7 +5,7 @@ int main()
 {
 	int width = 50;
 	int height = 20;
-	std::string nameofWindow("Console_Ì°³ÔÉß");
+	std::string nameofWindow("Console_ÍÆÏä×Ó");
 	MainWindows mainwnd(width, height, nameofWindow);
 	while (!mainwnd.BWindosOver())
 	{
@@ -14,7 +14,7 @@ int main()
 		{
 			mainwnd.TickFrame();
 		}
-		Sleep(100);
+		Sleep(10);
 	}
 	return 0;
 }

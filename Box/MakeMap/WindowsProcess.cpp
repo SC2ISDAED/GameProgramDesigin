@@ -4,7 +4,7 @@
 #include "WindowsProcess.h"
 #include "iostream"
 #include "floor.h"
-
+#include "string"
 #include "fstream"
 void MainWindows::Draw()
 {
@@ -71,16 +71,36 @@ void MainWindows::Draw()
 
 void MainWindows::ProcessInput()
 {
+	Direction newDirection=Direction::STOP;
 	if (_kbhit())
 	{
 		switch (_getch())
 		{
-
+		case 'w':
+		case 'W':
+			newDirection=Direction::UP;
+			break;
+		case 'a':
+		case 'A':
+			newDirection = Direction::LEFT;
+			break;
+		case 's':
+		case 'S':
+			newDirection = Direction::DOWN;
+			break;
+		case 'd':
+		case 'D':
+			newDirection = Direction::RIGHT;
+			break;
 		case '\033':
 			BWindowsShouldOver = true;
 			break;
+		default:
+			newDirection = Direction::STOP;
+			break;
 		}
 	}
+	Player.SetDirection(newDirection);
 	GameLogic();
 }
 
@@ -115,13 +135,195 @@ void MainWindows::DrawInfomation(short _x, short _y, int color, const std::strin
 
 void MainWindows::GameLogic()
 {
-	
+	//基本思路分为三段：1.首先根据盒子位置，以及新更新的盒子位置获取信息（盒子先遇到墙，那么玩家就推不动
+	//2.其次根据角色更新地图信息，诸如遇到墙壁，目标点等等
+	//3.更据前两步的信息，再次更新地图，主要更新角色旧位置上的信息				
+	std::pair<short, short> newLoc = Player.GetLocation();
+	std::pair<short, short> oldLoc = Player.GetLocation();
+	switch (Player.GetDirection())
+	{
+	case Direction::DOWN:
+		newLoc.second++;
+		break;
+	case Direction::UP:
+		newLoc.second--;
+		break;
+	case Direction::LEFT:
+		newLoc.first--;
+		break;
+	case Direction::RIGHT:
+		newLoc.first++;
+		break;
+	default:
+		break;
+	}
+	std::pair<short, short> newBoxLoc = newLoc;
+	std::pair<short, short> oldBoxLoc = newLoc;
+	short newActorLocIndex = newLoc.first + newLoc.second*mapHeight;
+	short newindexBoxLoc = 0;
+	if (m_Map[newActorLocIndex].IsSameLocation(newLoc))
+	{
+		//第一次更新
+		if (m_Map[newActorLocIndex].GetType() == FloorType::Box)
+		{
+			//获得新的箱子位置
+			switch (Player.GetDirection())
+			{
+			case Direction::DOWN:
+				newBoxLoc.second++;
+				break;
+			case Direction::UP:
+				newBoxLoc.second--;
+				break;
+			case Direction::LEFT:
+				newBoxLoc.first--;
+				break;
+			case Direction::RIGHT:
+				newBoxLoc.first++;
+				break;
+			default:
+				break;
+			}
+			newindexBoxLoc = newBoxLoc.first + newBoxLoc.second*mapHeight;
+
+			if (m_Map[newindexBoxLoc].IsSameLocation(newBoxLoc))
+			{
+
+				if (m_Map[newindexBoxLoc].GetType() == FloorType::Road)
+				{
+					m_Map[newindexBoxLoc].SetType(FloorType::Box);
+				}
+				else if (m_Map[newindexBoxLoc].GetType() == FloorType::Target)
+				{
+					m_Map[newindexBoxLoc].SetType(FloorType::AtTarget);
+					targetNum--;
+				}
+				else if (m_Map[newindexBoxLoc].GetType() == FloorType::AtTarget)
+				{
+					m_Map[newindexBoxLoc].SetType(FloorType::Box);
+					targetNum++;
+				}
+				else if (m_Map[newindexBoxLoc].GetType() == FloorType::Wall)
+				{
+					Player.SetDirection(Direction::STOP);
+				}
+			}
+			short indexOldBoxloc = oldBoxLoc.first + oldBoxLoc.second*mapHeight;
+			if (m_Map[indexOldBoxloc].IsSameLocation(oldBoxLoc) && Player.GetDirection() != Direction::STOP)
+			{
+				m_Map[indexOldBoxloc].SetType(FloorType::Road);
+			}
+		}
+	}
+	int oldActorLocIndex = oldLoc.first + oldLoc.second*mapHeight;
+	if (m_Map[newActorLocIndex].IsSameLocation(newLoc))
+	{
+		//第二次更新
+		if (m_Map[newActorLocIndex].GetType() == FloorType::Road)
+		{
+			m_Map[newActorLocIndex].SetType(FloorType::Charcter);
+			Player.SetLocation(newLoc);
+		}
+		else if (m_Map[newActorLocIndex].GetType() == FloorType::AtTarget)
+		{
+			switch (Player.GetDirection())
+			{
+			case Direction::DOWN:
+				newBoxLoc.second++;
+				break;
+			case Direction::UP:
+				newBoxLoc.second--;
+				break;
+			case Direction::LEFT:
+				newBoxLoc.first--;
+				break;
+			case Direction::RIGHT:
+				newBoxLoc.first++;
+				break;
+			default:
+				break;
+			}
+			short newindexBoxLoc = newBoxLoc.first + newBoxLoc.second*mapHeight;
+			short oldindexBoxLoc = oldBoxLoc.first + oldBoxLoc.second*mapHeight;
+			if (m_Map[newindexBoxLoc].GetType() == FloorType::Road)
+			{
+				m_Map[newActorLocIndex].SetType(FloorType::Charcter);
+				m_Map[newindexBoxLoc].SetType(FloorType::Box);
+				m_Map[oldActorLocIndex].SetType(FloorType::Target);
+				Player.SetLocation(newLoc);
+				
+				targetNum++;
+			}
+			else if(m_Map[newindexBoxLoc].GetType() == FloorType::Target)
+			{
+				m_Map[newindexBoxLoc].SetType(FloorType::AtTarget);
+				m_Map[oldindexBoxLoc].SetType(FloorType::Charcter);
+				IsCharcterAtTarget = true;
+				Player.SetLocation(newLoc);
+			}
+			else
+			{
+				Player.SetDirection(Direction::STOP);
+			}
+		}
+		else if (m_Map[newActorLocIndex].GetType() == FloorType::Target)
+		{
+			m_Map[newActorLocIndex].SetType(FloorType::Charcter);
+			Player.SetLocation(newLoc);
+
+
+			IsCharcterAtTarget = true;
+	/*		latterFrame = false;*/
+			
+		
+		}
+		else
+		{
+			Player.SetDirection(Direction::STOP);
+		}
+
+	}
+	if (Player.GetDirection() != Direction::STOP)
+	{
+		//第三次更新
+		if (IsCharcterAtTarget)
+		{
+			//用于还原target目标点的信息
+			if (!latterFrame)
+			{
+				m_Map[oldActorLocIndex].SetType(FloorType::Road);
+			}
+			else
+			{
+				m_Map[oldActorLocIndex].SetType(FloorType::Target);
+			}
+			IsCharcterAtTarget = false;
+
+			latterFrame = true;
+
+		}
+ 		else if (latterFrame)
+ 		{
+			m_Map[oldActorLocIndex].SetType(FloorType::Target);
+			latterFrame = false;
+			IsCharcterAtTarget = false;
+ 		}
+		else
+		{
+			m_Map[oldActorLocIndex].SetType(FloorType::Road);
+		}
+
+	}
+	Player.SetDirection(Direction::STOP);
+	if (targetNum==0)
+	{
+		Initial();
+	}
 }
 
 void MainWindows::LoadMap(const std::string &source)
 {
 	std::fstream file(source.c_str());
-
 	file >> mapWidhth >> mapHeight;
 	mapHeight = mapHeight ;
 	mapWidhth = mapWidhth;
@@ -129,7 +331,7 @@ void MainWindows::LoadMap(const std::string &source)
 	screenData[1].resize(mapHeight);
 	std::string getline;
 	file >> getline;
-	m_Map.reserve(mapWidhth*mapHeight);
+	m_Map.resize(mapWidhth*mapHeight);
 	
 	for (short locY = 0; locY < mapHeight; locY++)
 	{
@@ -150,6 +352,7 @@ void MainWindows::LoadMap(const std::string &source)
 				break;
 			case 3:
 				FType = FloorType::Target;
+				targetNum++;
 				break;
 			case 4:
 				FType = FloorType::Charcter;
@@ -160,7 +363,7 @@ void MainWindows::LoadMap(const std::string &source)
 				break;
 			}
 			Floor floor(FType, std::pair<short, short>(locX, locY));
-			m_Map.push_back(std::move(floor));
+			m_Map[locY*mapHeight+locX]=std::move(floor);
 		}
 	}
 	return;
@@ -203,8 +406,10 @@ void MainWindows::Initial()
 {
 	gameInstancedData.Score = 0;
 	std::string mapName;
-/*	mapCurrentNum = (mapCurrentNum+1) % mapNum;*/
-	LoadMap("Map/Map0.txt");
+
+	mapName = std::string("Map/Map") +std::to_string(mapCurrentNum)  + std::string(".txt");
+	LoadMap(mapName);
+	mapCurrentNum = (mapCurrentNum + 1) % mapNum;
 
 }
 
@@ -216,6 +421,6 @@ void MainWindows::TickFrame()
 
 void MainWindows::ShowScore()
 {
-	std::cout << "Game Score: " << gameInstancedData.Score << std::endl;
+	std::cout << "targetNum: " << targetNum << std::endl;
 }
 
