@@ -1,2 +1,18 @@
-﻿  main.cpp
+﻿  MainWindow.cpp
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(17): warning C4018: “<”: 有符号/无符号不匹配
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(19): warning C4018: “<”: 有符号/无符号不匹配
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(21): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(29): warning C4305: “参数”: 从“double”到“float”截断
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(30): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(40): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(133): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(138): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(143): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(148): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(156): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(191): warning C4018: “>=”: 有符号/无符号不匹配
+e:\游戏程序设计\sfmlgame\snake\snake\mainwindow.cpp(231): warning C4018: “>=”: 有符号/无符号不匹配
+  Snake.cpp
+  main.cpp
+  正在生成代码...
 sfml-graphics-d.lib(sfml-graphics-d-2.dll) : fatal error LNK1112: 模块计算机类型“x86”与目标计算机类型“x64”冲突
