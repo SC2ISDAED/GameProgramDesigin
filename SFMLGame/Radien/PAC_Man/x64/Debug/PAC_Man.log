@@ -1,0 +1,15 @@
+﻿  BigEnemy.cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\bigenemy.h(4): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  Bullet.cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\bullet.h(2): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  BulletList.cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\bullet.h(2): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  Helicopter .cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\helicopter.h(3): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  Hero.cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\hero.h(5): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  main.cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\main.cpp(2): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  MainWindow.cpp
+e:\游戏程序设计\sfmlgame\radien\pac_man\mainwindow.h(2): fatal error C1083: 无法打开包括文件: “SFML/Graphics.hpp”: No such file or directory
+  正在生成代码...
